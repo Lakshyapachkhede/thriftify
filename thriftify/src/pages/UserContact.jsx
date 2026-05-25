@@ -1,74 +1,258 @@
 import { useEffect, useState } from "react";
+
 import { useParams } from "react-router-dom";
 
 
-
-export default function UserContact()
-{
+export default function UserContact() {
 
     const { id } = useParams();
 
-    const [item, setItem] = useState(null);
 
-  useEffect(() => {
-    const fetchItem = async () => {
-      const res = await fetch(`http://localhost:3000/api/profile/${id}`);
-      const data = await res.json();
-      setItem(data);
-    };
+    // USER DATA
+    const [user, setUser] = useState(null);
 
-    fetchItem();
-  }, [id]);
 
-  if (!item) return <p>Loading...</p>;
+    // LOADING
+    const [loading, setLoading] = useState(true);
 
-    return <>
-    
-    <div className="container my-5">
-  <div className="profile-card">
-    <h3 className="mb-4">Seller Contact Information</h3>
 
-    <div className="row g-3">
+    // ERROR
+    const [error, setError] = useState("");
 
-      <div className="col-md-6">
-        <div className="info-label">Full Name</div>
-        <div className="info-value">{item.name}</div>
-      </div>
 
-      <div className="col-md-6">
-        <div className="info-label">Email</div>
-        <div className="info-value">{item.email}</div>
-      </div>
+    useEffect(() => {
 
-      <div className="col-md-6">
-        <div className="info-label">Phone Number</div>
-        <div className="info-value">{item.phone}</div>
-      </div>
+        const fetchUser = async () => {
 
-      <div className="col-md-6">
-        <div className="info-label">City</div>
-        <div className="info-value">{item.city}</div>
-      </div>
+            try {
 
-      <div className="col-md-6">
-        <div className="info-label">Address</div>
-        <div className="info-value">{item.address}</div>
-      </div>
+                setLoading(true);
 
-      <div className="col-md-6">
-        <div className="info-label">Pincode</div>
-        <div className="info-value">{item.pincode}</div>
-      </div>
+                const res = await fetch(
+                    `http://localhost:3000/api/profile/${id}`
+                );
 
-    </div>
 
-    <div className="mt-4">
-      <a href={`tel:${item.phone}`} className="btn btn-primary me-1">Call Seller</a>
-      <a href={`https://wa.me/tel:${item.phone}`} className="btn btn-success me-1">WhatsApp</a>
-      <a href={`mailto:${item.email}`} className="btn btn-outline-primary me-1">Email Seller</a>
-    </div>
+                if (!res.ok) {
 
-  </div>
-</div>
-    </>
+                    throw new Error("Failed to fetch user");
+                }
+
+                const data = await res.json();
+
+                setUser(data);
+
+            } catch (err) {
+
+                console.error(err);
+
+                setError(err.message);
+
+            } finally {
+
+                setLoading(false);
+            }
+        };
+
+        fetchUser();
+
+    }, [id]);
+
+
+    // LOADING UI
+    if (loading) {
+
+        return (
+
+            <div className="container my-5 text-center">
+
+                <div className="spinner-border"></div>
+
+            </div>
+        );
+    }
+
+
+    // ERROR UI
+    if (error) {
+
+        return (
+
+            <div className="container my-5">
+
+                <div className="alert alert-danger">
+
+                    {error}
+
+                </div>
+
+            </div>
+        );
+    }
+
+
+    // USER NOT FOUND
+    if (!user) {
+
+        return (
+
+            <div className="container my-5">
+
+                <div className="alert alert-secondary">
+
+                    User not found
+
+                </div>
+
+            </div>
+        );
+    }
+
+
+    return (
+
+        <div className="container my-5">
+
+            <div className="profile-card shadow p-4 rounded bg-white">
+
+                <h3 className="mb-4">
+
+                    Seller Contact Information
+
+                </h3>
+
+
+                <div className="row g-3">
+
+
+                    {/* NAME */}
+                    <div className="col-md-6">
+
+                        <div className="fw-bold">
+                            Full Name
+                        </div>
+
+                        <div>
+                            {user.name}
+                        </div>
+
+                    </div>
+
+
+                    {/* EMAIL */}
+                    <div className="col-md-6">
+
+                        <div className="fw-bold">
+                            Email
+                        </div>
+
+                        <div>
+                            {user.email}
+                        </div>
+
+                    </div>
+
+
+                    {/* PHONE */}
+                    <div className="col-md-6">
+
+                        <div className="fw-bold">
+                            Phone Number
+                        </div>
+
+                        <div>
+                            {user.phone}
+                        </div>
+
+                    </div>
+
+
+                    {/* CITY */}
+                    <div className="col-md-6">
+
+                        <div className="fw-bold">
+                            City
+                        </div>
+
+                        <div>
+                            {user.city}
+                        </div>
+
+                    </div>
+
+
+                    {/* ADDRESS */}
+                    <div className="col-md-6">
+
+                        <div className="fw-bold">
+                            Address
+                        </div>
+
+                        <div>
+                            {user.address}
+                        </div>
+
+                    </div>
+
+
+                    {/* PINCODE */}
+                    <div className="col-md-6">
+
+                        <div className="fw-bold">
+                            Pincode
+                        </div>
+
+                        <div>
+                            {user.pincode}
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                {/* ACTION BUTTONS */}
+                <div className="mt-4 d-flex flex-wrap gap-2">
+
+
+                    {/* CALL */}
+                    <a
+                        href={`tel:${user.phone}`}
+                        className="btn btn-primary"
+                    >
+
+                        Call Seller
+
+                    </a>
+
+
+                    {/* WHATSAPP */}
+                    <a
+                        href={`https://wa.me/91${user.phone}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="btn btn-success"
+                    >
+
+                        WhatsApp
+
+                    </a>
+
+
+                    {/* EMAIL */}
+                    <a
+                        href={`mailto:${user.email}`}
+                        className="btn btn-outline-primary"
+                    >
+
+                        Email Seller
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+    );
 }

@@ -1,6 +1,25 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
 
 export default function Upload() {
+
+  const navigate = useNavigate();
+
+
+  // AUTH CHECK
+  useEffect(() => {
+
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+
+      navigate("/login");
+    }
+
+  }, [navigate]);
+
+
   const [formData, setFormData] = useState({
     title: "",
     price: "",
@@ -24,43 +43,67 @@ export default function Upload() {
   };
 
   // Handle file input
-  const handleFileChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      images: e.target.files
-    }));
-  };
+const handleFileChange = (e) => {
+  setFormData((prev) => ({
+    ...prev,
+    images: Array.from(e.target.files)
+  }));
+};
 
   // Handle submit
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = async (e) => {
+
+  e.preventDefault();
+
+  try {
 
     const data = new FormData();
 
-    // Append all fields
     for (let key in formData) {
+
       if (key === "images") {
-        for (let i = 0; i < formData.images.length; i++) {
-          data.append("images", formData.images[i]);
-        }
+
+        formData.images.forEach((image) => {
+          data.append("images", image);
+        });
+
       } else {
+
         data.append(key, formData[key]);
       }
     }
 
-    console.log("Submitting:", formData);
+    const token = localStorage.getItem("token");
 
-    // Example API call
+    const res = await fetch(
+      "http://localhost:3000/api/item",
+      {
+        method: "POST",
 
-    fetch("http://localhost:3000/upload", {
-      method: "POST",
-      body: data
-    })
-    .then(res => res.json())
-    .then(data => console.log(data))
-    .catch(err => console.error(err));
-    
-  };
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+
+        body: data
+      }
+    );
+
+    const result = await res.json();
+
+    console.log(result);
+  
+
+  alert("Item uploaded successfully!");
+
+  navigate("/");
+
+  } catch (err) {
+
+    console.error(err);
+    alert("Item not uploaded!");
+
+  }
+};
 
   // Handle reset
   const handleReset = () => {
@@ -145,10 +188,12 @@ export default function Upload() {
                 value={formData.condition}
                 onChange={handleChange}
               >
-                <option value="">Select Condition</option>
-                <option>⭐⭐⭐⭐ (Like New)</option>
-                <option>⭐⭐⭐ (Good)</option>
-                <option>⭐⭐ (Used)</option>
+               
+                <option value="5">⭐⭐⭐⭐⭐ (New)</option>
+                <option value="4">⭐⭐⭐⭐ (Like New)</option>
+                <option value="3">⭐⭐⭐ (Good)</option>
+                <option value="2">⭐⭐ (Used)</option>
+                <option value="1">⭐ (Old)</option>
               </select>
             </div>
 
@@ -175,6 +220,9 @@ export default function Upload() {
                 <option>Shirt</option>
                 <option>Jacket</option>
                 <option>Hoodie</option>
+                <option>Pants</option>
+                <option>T Shirt</option>
+                <option>Other</option>
               </select>
             </div>
 
@@ -193,6 +241,7 @@ export default function Upload() {
               <label className="form-label">Upload Images</label>
               <input
                 type="file"
+                name="images"
                 className="form-control"
                 multiple
                 onChange={handleFileChange}
