@@ -7,7 +7,7 @@ function Home() {
     const [items, setItems] = useState([]);
 
     useEffect(() => {
-        fetch("http://localhost:3000/api/home")
+        fetch("https://thriftify-pa6z.onrender.com/api/home")
             .then((res) => res.json())
             .then((data) => setItems(data))
             .catch((err) => console.error(err));

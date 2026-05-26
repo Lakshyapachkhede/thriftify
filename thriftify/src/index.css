@@ -1,3 +1,7 @@
+    body{
+      min-height: 100vh;
+    }    
+    
     .carousel img {
       height: 400px;
       object-fit: cover;
@@ -42,6 +46,8 @@
       transition: transform 0.2s ease;
       border-radius: 10px;
     }
+
+
 
     .item-row:hover {
       transform: scale(1.01);

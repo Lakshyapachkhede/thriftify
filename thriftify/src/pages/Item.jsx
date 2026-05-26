@@ -11,7 +11,7 @@ export default function Item()
 
   useEffect(() => {
     const fetchItem = async () => {
-      const res = await fetch(`http://localhost:3000/api/item/${id}`);
+      const res = await fetch(`https://thriftify-pa6z.onrender.com/api/item/${id}`);
       const data = await res.json();
       setItem(data);
     };

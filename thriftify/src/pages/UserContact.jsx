@@ -29,7 +29,7 @@ export default function UserContact() {
                 setLoading(true);
 
                 const res = await fetch(
-                    `http://localhost:3000/api/profile/${id}`
+                    `https://thriftify-pa6z.onrender.com/api/profile/${id}`
                 );
 
 

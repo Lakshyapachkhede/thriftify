@@ -3,7 +3,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 
-export default function CardHor({ props }) {
+export default function CardHor({ props, showDelete = false, onDelete }) {
 
     return (
 
@@ -123,12 +123,27 @@ export default function CardHor({ props }) {
 
                 <Link
                     to={`/item/${props._id}`}
-                    className="btn btn-primary"
+                    className="btn btn-primary me-1"
                 >
 
                     View Item
 
                 </Link>
+
+                {
+                    showDelete && (
+
+                        <Link
+                            className="btn btn-danger"
+                            onClick={() =>
+                                onDelete(props._id)
+                            }
+                        >
+                            Delete
+                        </Link>
+                    )
+                }
+
 
             </div>
 

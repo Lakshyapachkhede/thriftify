@@ -38,7 +38,7 @@ export default function Search() {
             try {
 
                 let url =
-                    `http://localhost:3000/api/search?q=${query}`;
+                    `https://thriftify-pa6z.onrender.com/api/search?q=${query}`;
 
 
                 // CATEGORY

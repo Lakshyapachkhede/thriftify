@@ -42,7 +42,7 @@ export default function Signup() {
         try {
 
             const res = await fetch(
-                "http://localhost:3000/api/register",
+                "https://thriftify-pa6z.onrender.com/api/register",
                 {
                     method: "POST",
 

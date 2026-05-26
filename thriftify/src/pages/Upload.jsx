@@ -6,6 +6,8 @@ export default function Upload() {
 
   const navigate = useNavigate();
 
+  const [loading, setLoading] = useState(false);
+
 
   // AUTH CHECK
   useEffect(() => {
@@ -43,67 +45,77 @@ export default function Upload() {
   };
 
   // Handle file input
-const handleFileChange = (e) => {
-  setFormData((prev) => ({
-    ...prev,
-    images: Array.from(e.target.files)
-  }));
-};
+  const handleFileChange = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      images: Array.from(e.target.files)
+    }));
+  };
 
   // Handle submit
   const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  e.preventDefault();
+    // PREVENT MULTIPLE CLICKS
+    if (loading) return;
 
-  try {
+    setLoading(true);
 
-    const data = new FormData();
 
-    for (let key in formData) {
+    try {
 
-      if (key === "images") {
+      const data = new FormData();
 
-        formData.images.forEach((image) => {
-          data.append("images", image);
-        });
+      for (let key in formData) {
 
-      } else {
+        if (key === "images") {
 
-        data.append(key, formData[key]);
+          formData.images.forEach((image) => {
+            data.append("images", image);
+          });
+
+        } else {
+
+          data.append(key, formData[key]);
+        }
       }
+
+      const token = localStorage.getItem("token");
+
+      const res = await fetch(
+        "https://thriftify-pa6z.onrender.com/api/item",
+        {
+          method: "POST",
+
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+
+          body: data
+        }
+      );
+
+      const result = await res.json();
+
+      console.log(result);
+
+
+      alert("Item uploaded successfully!");
+
+      navigate("/");
+
+    } catch (err) {
+
+      console.error(err);
+      alert("Item not uploaded!");
+
     }
+    finally {
 
-    const token = localStorage.getItem("token");
-
-    const res = await fetch(
-      "http://localhost:3000/api/item",
-      {
-        method: "POST",
-
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-
-        body: data
-      }
-    );
-
-    const result = await res.json();
-
-    console.log(result);
-  
-
-  alert("Item uploaded successfully!");
-
-  navigate("/");
-
-  } catch (err) {
-
-    console.error(err);
-    alert("Item not uploaded!");
-
-  }
-};
+      // ENABLE BUTTON AGAIN
+      setLoading(false);
+    }
+  };
 
   // Handle reset
   const handleReset = () => {
@@ -138,6 +150,7 @@ const handleFileChange = (e) => {
                 value={formData.title}
                 onChange={handleChange}
                 placeholder="e.g. Denim Jacket"
+                required
               />
             </div>
 
@@ -150,6 +163,7 @@ const handleFileChange = (e) => {
                 value={formData.price}
                 onChange={handleChange}
                 placeholder="e.g. 800"
+                required
               />
             </div>
 
@@ -161,6 +175,7 @@ const handleFileChange = (e) => {
                 className="form-control"
                 value={formData.brand}
                 onChange={handleChange}
+                required
               />
             </div>
 
@@ -171,6 +186,7 @@ const handleFileChange = (e) => {
                 className="form-select"
                 value={formData.size}
                 onChange={handleChange}
+                required
               >
                 <option value="">Select Size</option>
                 <option>S</option>
@@ -187,9 +203,10 @@ const handleFileChange = (e) => {
                 className="form-select"
                 value={formData.condition}
                 onChange={handleChange}
+                required
               >
-               
-                <option value="5">⭐⭐⭐⭐⭐ (New)</option>
+
+                <option value="5" selected>⭐⭐⭐⭐⭐ (New)</option>
                 <option value="4">⭐⭐⭐⭐ (Like New)</option>
                 <option value="3">⭐⭐⭐ (Good)</option>
                 <option value="2">⭐⭐ (Used)</option>
@@ -205,6 +222,7 @@ const handleFileChange = (e) => {
                 className="form-control"
                 value={formData.color}
                 onChange={handleChange}
+                required
               />
             </div>
 
@@ -215,6 +233,7 @@ const handleFileChange = (e) => {
                 className="form-select"
                 value={formData.category}
                 onChange={handleChange}
+                required
               >
                 <option value="">Select Category</option>
                 <option>Shirt</option>
@@ -290,8 +309,16 @@ const handleFileChange = (e) => {
               >
                 Reset
               </button>
-              <button type="submit" className="btn btn-primary">
-                Upload Item
+              <button
+                type="submit"
+                className="btn btn-primary"
+                disabled={loading}
+              >
+                {
+                  loading
+                    ? "Uploading..."
+                    : "Upload Item"
+                }
               </button>
             </div>
 

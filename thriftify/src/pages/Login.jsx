@@ -42,7 +42,7 @@ export default function Login() {
         try {
 
             const res = await fetch(
-                "http://localhost:3000/api/login",
+                "https://thriftify-pa6z.onrender.com/api/login",
                 {
                     method: "POST",
 

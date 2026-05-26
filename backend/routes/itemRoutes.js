@@ -7,7 +7,9 @@ const authMiddleware = require("../middleware/authMiddleware");
 // GET HOME ITEMS
 router.get("/home", async (req, res) => {
     try {
-        const items = await Item.find().limit(10);
+        const items = await Item.find()
+        .sort({ createdAt: -1 })
+        .limit(10);
 
         res.json(items);
     } catch (err) {
