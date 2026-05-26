@@ -20,7 +20,9 @@ export default function About() {
     "Cloudinary",
     "Multer",
     "Render",
-    "React Router DOM"
+    "Vercel",
+    "React Router DOM",
+    
   ];
 
 
