@@ -1,5 +1,5 @@
 import Footer from "./components/Footer"
-import Navbar from "./components/navbar"
+import Navbar from "./components/Navbar"
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from './pages/Home';
 import Search from './pages/Search';
@@ -7,7 +7,7 @@ import Upload from './pages/Upload';
 import Item from "./pages/Item";
 import Profile from "./pages/Profile";
 import UserContact from "./pages/UserContact";
-import Signup from "./pages/signup";
+import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import About from "./pages/About";
