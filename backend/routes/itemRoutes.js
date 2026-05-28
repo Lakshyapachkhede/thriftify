@@ -8,7 +8,7 @@ const authMiddleware = require("../middleware/authMiddleware");
 router.get("/home", async (req, res) => {
     try {
         const items = await Item.find()
-        .sort({ createdAt: -1 })
+        .sort({ _id: -1 })
         .limit(10);
 
         res.json(items);
